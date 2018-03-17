@@ -39,7 +39,7 @@ app.use(exjwt({ secret: 'secret' }).unless({ path: unrestricted }));
 
 // courses
 app.get('/courses', wrap(async (req, res) => {
-  const courses = await db.Course.findAll({ include: db.Tag });
+  const courses = await db.Course.findAll({ include: [db.Tag, db.Step] });
   res.json(courses);
 }));
 
@@ -94,7 +94,7 @@ app.get('/users/createdCourses', wrap(async (req, res) => {
 app.get('/enrollments', wrap(async (req, res) => {
   const userId = req.user.id;
   const user = await db.User.findById(userId);
-  const enrollments = await user.getCourses();
+  const enrollments = await user.getCourses({include: [{model: db.Step}]});
   const filtered = enrollments.filter((course) => {
     return course.userCourse.enrolled === true;
   })
@@ -175,15 +175,21 @@ app.post('/users', wrap(async (req, res) => {
 // comments
 app.get('/comments', wrap(async (req, res) => {
   const { courseId } = req.query;
+  console.log(req.query);
   const course = await db.Course.findById(courseId);
-  const comments = await course.getComments({ include: db.User });
+  const comments = await course.getComments({
+    where: {commentId: null},
+    include: [{model: db.User}, { model: db.Comment, as: 'thread',
+      include: {model: db.User}
+    }]
+  });
   res.json(comments);
 }));
 
 app.post('/comments', wrap(async (req, res) => {
   const userId = req.user.id;
-  const { courseId, text } = req.body;
-  const comment = await db.Comment.create({ userId, courseId, text });
+  const { courseId, text, commentId } = req.body;
+  const comment = await db.Comment.create({ userId, courseId, text, commentId });
   const newComment = await db.Comment.findById(comment.id, { include: db.User });
   res.send(newComment);
 }));

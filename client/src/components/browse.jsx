@@ -17,6 +17,8 @@ class Browse extends Component {
   updateInputValue = (e) => {
     this.setState({
       query: e.target.value
+    }, () => {
+      this.search();
     });
   }
 
@@ -31,7 +33,7 @@ class Browse extends Component {
   }
 
   componentDidMount() {
-    ApiService.browse().then(courses => this.setState({ courses, filteredCourses: courses }))
+    ApiService.browse().then(courses => this.setState({ courses, filteredCourses: courses }), () => console.log(this.state.courses));
     ApiService.getTags().then(tags => this.setState({ tags }));
   }
 
@@ -50,6 +52,7 @@ class Browse extends Component {
 
   render() {
     const snippets = this.state.filteredCourses.map(course => <Snippet key={course.id} data={course}/>);
+    console.log(this.state.courses);
     const tags = this.state.tags.map(tag => {
       return (
         <div
@@ -73,8 +76,7 @@ class Browse extends Component {
           all courses
         </div>
         {tags}
-        <input value={this.state.query} onChange={this.updateInputValue} className="search" type="search" placeholder="Search"></input>
-        <button onClick={this.search} className="searchButton" type="submit">Search</button>
+        <input value={this.state.query} onChange={this.updateInputValue} className="search" type="search" placeholder="Search for courses..."></input>
         {snippets}
       </div>
     );
