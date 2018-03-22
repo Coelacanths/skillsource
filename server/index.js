@@ -9,6 +9,8 @@ const express = require('express');
 const jwt = require('jsonwebtoken');
 const pssg = require('pssg'); // Google Pagespeed Screenshot API
 const cloudinary = require('./helpers/cloudinary');
+const mailer = require('./helpers/mailer.js');
+const schedule = require('node-schedule');
 
 const app = express();
 const wrap = fn => (...args) => fn(...args).catch(args[2]);
@@ -25,6 +27,18 @@ async function asyncForEach(array, callback) {
     await callback(array[index], index, array)
   }
 }
+
+// configure cron job for course enrollment update emails
+const rule = new schedule.RecurrenceRule();
+rule.hour = 24;
+schedule.scheduleJob('30 12 * * *', () => {
+  Promise.all(mailer.unsentEmails)
+    .then((res) => {
+      console.log(res);
+      mailer.unsentEmails = [];
+      mailer.emailCourses = {};
+    });  
+});
 
 const unrestricted = [
   { url: '/courses/', methods: ['GET'] },
@@ -125,6 +139,7 @@ app.post('/enrollments', wrap(async (req, res) => {
   const userId = req.user.id;
   const user = await db.User.findById(userId);
   const course = await db.Course.findById(courseId, { include: db.Step });
+  const creator = await db.User.findById(course.creatorId);
   const userCourse = await db.UserCourse.findOne({ where: { userId, courseId } });
 
   if (userCourse) {
@@ -134,7 +149,16 @@ app.post('/enrollments', wrap(async (req, res) => {
       await user.addCourse(courseId);
       // doing the work of POST /user-steps
       await user.addSteps(course.steps);
+      //email the course creator if creator has checked email option
+      if (creator.creatorEmail) {
+        console.log('about to schedule an email');
+        await mailer.email(creator.email, courseId, 'New enrollment!', `Congratulations, a new user has enrolled in your course "${course.name}"!`);
+      } else {
+        console.log("this user does not want to be emailed");
+      }
+      
     } catch(err) {
+      console.log(err);
       throw boom.badRequest('User already enrolled in this course');
     }
   }
@@ -195,12 +219,16 @@ app.post('/users', wrap(async (req, res) => {
 
 // update email or password
 app.put('/users/:id', wrap(async (req, res) => {
-  const { password, email } = req.body;
+  console.log(req.body);
+  const { password, email, enrollEmail } = req.body;
   const userId = req.params.id;
   if (email) await db.User.update({ email }, { where: { id: userId }});
   if (password) {
     const hashedPassword = await bcrypt.hash(password, 10);
     await db.User.update({ password: hashedPassword }, { where: { id: userId }});
+  }
+  if (enrollEmail !== undefined) {
+    await db.User.update( { creatorEmail: enrollEmail}, { where: { id: userId }});
   }
 
   const updatedUser = await db.User.findOne({ attributes: ['id', 'username', 'email'], where: { id: userId }});
