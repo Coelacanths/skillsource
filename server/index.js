@@ -8,6 +8,7 @@ const exjwt = require('express-jwt');
 const express = require('express');
 const jwt = require('jsonwebtoken');
 const pssg = require('pssg'); // Google Pagespeed Screenshot API
+const cloudinary = require('./helpers/cloudinary');
 
 const app = express();
 const wrap = fn => (...args) => fn(...args).catch(args[2]);
@@ -52,7 +53,7 @@ app.get('/courses/:courseId', wrap(async (req, res) => {
 
 app.post('/courses', wrap(async (req, res) => {
   // expecting course: { name, description, steps, tags }
-  // where array steps: [{ ordinalNumber, name, text, url }]
+  // where array steps: [{ ordinalNumber, name, text, url, imgRef }]
   // doing the work of POST /steps
   const course = { creatorId: req.user.id, ...req.body };
   const newCourse = await db.Course.create(course, { include: db.Step });
@@ -71,30 +72,48 @@ app.post('/courses', wrap(async (req, res) => {
 
   /// Retrieve and save screenshots
   newCourse.steps.forEach((step) => {
-    pssg.download(step.url, {
-      dest: __dirname + '/../public/images/',
-      filename: step.id
-    }).then((file) => {
-      console.log('Screenshot saved to' + file + '.')
-    });
+
+    if (step.url) {
+      pssg.download(step.url, {
+        dest: __dirname + '/../public/images/',
+        filename: step.id
+      }).then((file) => {
+        console.log('Screenshot saved to' + file + '.')
+  
+        cloudinary.uploader.upload(file, (err, result) => {
+          if (err) {
+            console.log(err);
+          } else {
+            console.log(result)
+          }
+        });
+  
+      }).catch((err) => {
+        console.log(err);
+      })
+    }
   })
+}));
+
+app.get('/course/:courseId/enrollments', wrap(async (req, res) => {
+  const { courseId } = req.params;
+  const enrollments = await db.UserCourse.findAll({ where: { courseId } });
+  res.json(enrollments);
 }));
 
 app.get('/users/createdCourses', wrap(async (req, res) => {
   const userId = req.user.id;
   const creatorId = userId;
   const user = await db.User.findById(userId);
-  const userCourses = await db.Course.findAll({ where: { creatorId } });
-  res.json({
-    courses: userCourses
-  });
+  const courses = await db.Course.findAll({ where: { creatorId }, include: db.Step });
+  res.json({ courses });
 }));
 
 // enrollments
 app.get('/enrollments', wrap(async (req, res) => {
   const userId = req.user.id;
   const user = await db.User.findById(userId);
-  const enrollments = await user.getCourses({include: [{model: db.Step}]});
+  const enrollments = await user.getCourses({ include: [{ model: db.Step }] });
   const filtered = enrollments.filter((course) => {
     return course.userCourse.enrolled === true;
   })
@@ -158,8 +177,9 @@ app.patch('/user-steps', wrap(async (req, res) => {
 // users
 app.get('/users', wrap(async (req, res) => {
   const user = await db.User.findById(req.user.id);
+  const { id, username, email } = user;
   if (!user) throw boom.notFound('Cannot locate user by supplied userId');
-  res.json(user);
+  res.json({ id, username, email });
 }));
 
 app.post('/users', wrap(async (req, res) => {
@@ -169,13 +189,27 @@ app.post('/users', wrap(async (req, res) => {
 
   const hashedPassword = await bcrypt.hash(password, 10);
   const newUser = await db.User.create({ username, email, password: hashedPassword });
-  res.json(newUser);
+  const withoutPassword = { id: newUser.id, email: newUser.email, username: newUser.username };
+  res.json(withoutPassword);
+}));
+
+// update email or password
+app.put('/users/:id', wrap(async (req, res) => {
+  const { password, email } = req.body;
+  const userId = req.params.id;
+  if (email) await db.User.update({ email }, { where: { id: userId }});
+  if (password) {
+    const hashedPassword = await bcrypt.hash(password, 10);
+    await db.User.update({ password: hashedPassword }, { where: { id: userId }});
+  }
+
+  const updatedUser = await db.User.findOne({ attributes: ['id', 'username', 'email'], where: { id: userId }});
+  res.json(updatedUser);
 }));
 
 // comments
 app.get('/comments', wrap(async (req, res) => {
   const { courseId } = req.query;
-  console.log(req.query);
   const course = await db.Course.findById(courseId);
   const comments = await course.getComments({
     where: {commentId: null},
