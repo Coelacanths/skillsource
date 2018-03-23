@@ -23,7 +23,6 @@ class CreateStep extends Component {
     }).catch((err) => {
       console.log(err);
     })
-
   }
 
   render() {
@@ -34,14 +33,14 @@ class CreateStep extends Component {
         <button id="delete" onClick={() => {this.props.deleteStep(this.props.data.ordinalNumber)}}>Delete</button>
         </div>
         <div className="input">
-          <input defaultValue={this.props.data.name} name="name" className="stepName" type="text" placeholder="Step name..." onChange={(e) => {this.props.stepChange(e, this.props.data.ordinalNumber)}}/>
+          <input value={this.props.data.name} name="name" className="stepName" type="text" placeholder="Step name..." onChange={(e) => {this.props.stepChange(e, this.props.data.ordinalNumber)}}/>
         </div>
 
         <div className="input">
-          <textarea defaultValue={this.props.data.text} name="text" className="stepText" type="text" placeholder="Description..."onChange={(e) => {this.props.stepChange(e, this.props.data.ordinalNumber)}}/>
+          <textarea value={this.props.data.text} name="text" className="stepText" type="text" placeholder="Description..."onChange={(e) => {this.props.stepChange(e, this.props.data.ordinalNumber)}}/>
         </div>
         <div className="input">
-          <input defaultValue={this.props.data.minutes} name="duration" className="stepDuration" type="text" placeholder="Duration..." onChange={(e) => {this.props.stepChange(e, this.props.data.ordinalNumber)}}/>
+          <input value={this.props.data.minutes} name="duration" className="stepDuration" type="text" placeholder="Duration..." onChange={(e) => {this.props.stepChange(e, this.props.data.ordinalNumber)}}/>
           <select name="units" onChange={(e) => {this.props.stepChange(e, this.props.data.ordinalNumber)}}>
             <option value="minutes">Minutes</option>
             <option value="hours">Hours</option>
@@ -54,7 +53,7 @@ class CreateStep extends Component {
           <div className="input">
             <label>
               Link to online resource<br/>
-              <input defaultValue={this.props.data.url} name="url" className="stepUrl" type="text" placeholder="Full URL (e.g., http://www.cnn.com)..." onChange={(e) => {this.props.stepChange(e, this.props.data.ordinalNumber)}}/>
+              <input value={this.props.data.url} name="url" className="stepUrl" type="text" placeholder="Full URL (e.g., http://www.cnn.com)..." onChange={(e) => {this.props.stepChange(e, this.props.data.ordinalNumber)}}/>
             </label>
           </div>
         </div>

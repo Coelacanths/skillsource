@@ -75,6 +75,7 @@ class EditCourse extends Component {
       steps[i].ordinalNumber = i;
     }
     this.setState({ steps });
+    console.log('steps after delete step is called~~~~', steps)
   }
 
   handleStepsChange = (e, index) => {
@@ -101,6 +102,7 @@ class EditCourse extends Component {
   }
 
   render() {
+    console.log('steps inside render().   ', this.state.steps)
     const steps = this.state.steps.map((step, i) => {
       return (
         <CreateStep
@@ -132,6 +134,7 @@ class EditCourse extends Component {
             <textarea defaultValue={this.props.course.description} name="description" id="createDescription" type="text" onChange={this.handleChange}/>
           </div>
           {steps}
+          {console.log('steps inside the return~~~~', steps)}
           <button onClick={this.addStep}>Add a step</button>
           <button onClick={this.handleSubmit}>Submit Changes</button>
         </div>

@@ -16,6 +16,18 @@ const ApiService = {
     });
   },
 
+  updateCourse: (name, description, steps, tags) => {
+    return AuthService.fetch('/courses', {
+      method: 'PUT',
+      body: {
+        name,
+        description,
+        steps,
+        tags,
+      }
+    });
+  },
+
   getCourse: (id) => AuthService.fetch(`/courses/${id}`, { method: 'GET' }),
 
   isEnrolled: (courseId) => {
