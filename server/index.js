@@ -46,7 +46,7 @@ app.get('/courses', wrap(async (req, res) => {
 
 app.get('/courses/:courseId', wrap(async (req, res) => {
   const { courseId } = req.params;
-  const course = await db.Course.findById(courseId, { include: [db.Step, db.Comment] });
+  const course = await db.Course.findById(courseId, { include: [db.Step, db.Comment, db.Tag] });
   course.dataValues.ratingsCount = await db.ratingsCountByCourseId(courseId);
   res.json(course);
 }));
@@ -233,6 +233,7 @@ app.get('/tags', wrap(async (req, res) => {
   const tags = await db.Tag.findAll();
   res.json(tags);
 }));
+
 
 // auth
 app.post('/login', wrap(async (req, res) => {

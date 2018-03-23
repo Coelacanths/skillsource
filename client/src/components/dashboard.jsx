@@ -103,11 +103,11 @@ class Dashboard extends React.Component {
           return course;
         })
       }).then((res) => {
-        //this.setState({courses: res})
         return res.map((course) => {
           return ApiService.getCourseEnrollments(course.id)
           .then((res)=>{
             course.numOfEnroll = res.length
+            course.editable = true;
             return course;
           })
         })
@@ -148,7 +148,8 @@ class Dashboard extends React.Component {
           key={course.id}
           data={course}
           progress={course.progress} 
-          numOfEnroll={course.numOfEnroll} />
+          numOfEnroll={course.numOfEnroll} 
+          editable={course.editable} />
       )
     });
 
