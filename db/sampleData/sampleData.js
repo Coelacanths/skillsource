@@ -31,7 +31,7 @@ const users = [
     email:'shelldog42@gmail.com',
     username: 'Michelle',
     password: 'chickenface',
-    creatorEmail: false,
+    creatorEmail: true,
     reminderEmail: true,
   }
 ];
@@ -51,6 +51,11 @@ const courses = [
     creatorId: 1,
     name: 'Play the ukelele',
     description: 'Learn how to play the uke through youtube videos, perfectly ordered by level of difficulty.'
+  },
+  {
+    creatorId: 5,
+    name: 'Send email with node',
+    description: 'Be so fancy when your application sends automatic emails!'
   }
 ]
 
@@ -126,6 +131,22 @@ const steps = [
     url: 'https://www.youtube.com/watch?v=C7cPKXfI4CM',
     courseId: 3,
     minutes: 500
+  },
+  {
+    ordinalNumber: 0,
+    name: 'get the npm package nodemailer',
+    text: 'install it, yo!',
+    url: 'https://www.npmjs.com/package/nodemailer',
+    courseId: 4,
+    minutes: 5
+  },
+   {
+    ordinalNumber: 1,
+    name: 'configure your email settings',
+    text: 'it\'s really not that bad I swear',
+    url: 'https://nodemailer.com/usage/',
+    courseId: 4,
+    minutes: 15
   }
 ]
 

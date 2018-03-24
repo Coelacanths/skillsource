@@ -30,7 +30,7 @@ async function asyncForEach(array, callback) {
 
 // configure cron job for daily digest emails
 const rule = new schedule.RecurrenceRule();
-rule.hour = 24;
+rule.minute = 3;
 
 //schedule daily user course reminder emails
 schedule.scheduleJob('44 20 * * *', async() => {
@@ -55,8 +55,8 @@ schedule.scheduleJob('44 20 * * *', async() => {
   });
 });
 
-//schedule daily enrollment update emails
-schedule.scheduleJob('45 20 * * *', () => {
+//schedule the sending of all unsent emails once per day
+schedule.scheduleJob('5 10 * * *', () => {
   Promise.all(mailer.unsentEmails)
     .then((res) => {
       //res confirms the sent email
