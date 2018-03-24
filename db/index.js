@@ -116,7 +116,7 @@ Comment.hasMany(Comment, { as: 'thread'});
 Course.belongsToMany(Tag, { through: CourseTags });
 Tag.belongsToMany(Course, { through: CourseTags });
 
-/// USE THIS TO SEED DB ///////
+// / USE THIS TO SEED DB ///////
 
 // sequelize.sync({ force: true }).then(async () => {
 //   await User.bulkCreate(seed.sampleUsers);
