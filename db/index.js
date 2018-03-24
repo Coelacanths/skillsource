@@ -1,6 +1,7 @@
 const seed = require('./sampleData/sampleData.js')
 const Sequelize = require('sequelize');
 const { db_name, db_user, db_password } = require('../config/db');
+const Op = Sequelize.Op;
 
 const sequelize = new Sequelize(db_name, db_user, db_password, {
   host: 'us-cdbr-iron-east-05.cleardb.net',
@@ -131,10 +132,10 @@ Tag.belongsToMany(Course, { through: CourseTag });
 
 /////////////////////////////
 
-const ratingsCountByCourseId = (courseId) => UserCourse.count({ where: { courseId } });
+const ratingsCountByCourseId = (courseId) => UserCourse.count({ where: { courseId, rating: { [Op.ne]: null } } });
 
 const updateCourseRating = async(courseId) => {
-  const ratingsSum = await UserCourse.sum('rating', { where: { courseId } });
+  const ratingsSum = await UserCourse.sum('rating', { where: { courseId, rating: { [Op.ne]: null } } });
   ratingsCount = await ratingsCountByCourseId(courseId);
   const rating = Math.ceil(ratingsSum / ratingsCount);
   await Course.update({ rating }, { where: { id: courseId } });
