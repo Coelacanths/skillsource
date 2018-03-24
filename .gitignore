@@ -65,6 +65,7 @@ client/src/.DS_Store
 .DS_Store
 
 # config variables
-config/config.js
-config/cloudinary.js
 config/*
+
+public/images/*
+
