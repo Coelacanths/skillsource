@@ -89,6 +89,11 @@ const Tag = sequelize.define('tag', {
   }
 });
 
+const CourseTags = sequelize.define('courseTags', {
+  courseId: Sequelize.INTEGER, 
+  tagId: Sequelize.INTEGER
+});
+
 Course.belongsTo(User, { as: 'creator' });
 
 User.belongsToMany(Course, { through: UserCourse });
@@ -108,8 +113,8 @@ Course.hasMany(Comment);
 
 Comment.hasMany(Comment, { as: 'thread'});
 
-Course.belongsToMany(Tag, { through: 'courseTags' });
-Tag.belongsToMany(Course, { through: 'courseTags' });
+Course.belongsToMany(Tag, { through: CourseTags });
+Tag.belongsToMany(Course, { through: CourseTags });
 
 /// USE THIS TO SEED DB ///////
 
@@ -152,5 +157,6 @@ module.exports = {
   Tag,
   updateCourseRating,
   ratingsCountByCourseId,
-  getCourseLength
+  CourseTags,
+  getCourseLength,
 }
