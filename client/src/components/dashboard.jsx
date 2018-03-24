@@ -141,8 +141,8 @@ class Dashboard extends React.Component {
     })
   }
 
-  forceUpdate = () => {
-    this.forceUpdate()
+  reRenderCreated = () => {
+    this.created();
   }
 
   render(){
@@ -154,7 +154,7 @@ class Dashboard extends React.Component {
           progress={course.progress} 
           numOfEnroll={course.numOfEnroll} 
           editable={course.editable} 
-          forceUpdate={this.forceUpdate}/>
+          reRenderCreated={this.reRenderCreated}/>
       )
     });
 

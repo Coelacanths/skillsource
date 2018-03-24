@@ -55,6 +55,7 @@ class EditCourse extends Component {
     const { steps, tags, suggestions, name, description } = this.state;
     ApiService.updateCourse(this.props.course.id, name, description, steps, tags, this.state.stepsToDelete)
       .then( () => this.props.toggleEdit())
+      .then( () => this.props.reRenderCreated())
       .catch(err => console.error('err in submit changes', err));
   }
 

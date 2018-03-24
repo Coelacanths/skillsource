@@ -88,7 +88,7 @@ class Snippet extends Component {
       </a>
       {
             this.state.editable
-            ? <EditCourse course={this.props.data} toggleEdit={this.edit} />
+            ? <EditCourse course={this.props.data} toggleEdit={this.edit} reRenderCreated={this.props.reRenderCreated} />
             : ''
           }
       </div>
