@@ -96,7 +96,7 @@ class CreateStep extends Component {
 
         <div className="input">
           <input defaultValue={this.props.data.minutes} name="duration" className="stepDuration" type="text" placeholder="Duration..." onChange={(e) => {this.props.stepChange(e, this.props.data.ordinalNumber)}}/>
-          <select name="units" onChange={(e) => {this.props.stepChange(e, this.props.data.ordinalNumber)}}>
+          <select name="unit" onChange={(e) => {this.props.stepChange(e, this.props.data.ordinalNumber)}}>
             <option value="minutes">Minutes</option>
             <option value="hours">Hours</option>
             <option value="days">Days</option>

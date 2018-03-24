@@ -8,7 +8,6 @@ const exjwt = require('express-jwt');
 const express = require('express');
 const jwt = require('jsonwebtoken');
 const pssg = require('pssg'); // Google Pagespeed Screenshot API
-const cloudinary = require('./helpers/cloudinary');
 const mailer = require('./helpers/mailer.js');
 const schedule = require('node-schedule');
 const moment = require('moment');
