@@ -172,7 +172,7 @@ class Settings extends Component {
           </form>
         </div>
 
-        <button onClick={this.handleSubmit}>Sumbit</button>
+        <button onClick={this.handleSubmit}>Submit</button>
       </div>
     )
   }
