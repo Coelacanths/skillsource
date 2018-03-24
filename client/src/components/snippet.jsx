@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import StarRatingComponent from 'react-star-rating-component';
 import moment from 'moment';
-import EditCourse from './editCourse.js'
+import EditCourse from './editCourse.jsx'
 
 
 class Snippet extends Component {
