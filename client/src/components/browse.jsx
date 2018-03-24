@@ -28,7 +28,8 @@ class Browse extends Component {
     const filteredCourses = this.state.courses.filter(course => {
       const title = course.name.toLowerCase();
       const description = course.description ? course.description.toLowerCase() : '';
-      return title.includes(query) || description.includes(query);
+      const tags = course.tags.map(tag => tag.name.toLowerCase()).join(' ');
+      return title.includes(query) || description.includes(query) || tags.includes(query);
     });
     this.setState({ filteredCourses });
   }
@@ -93,11 +94,11 @@ class Browse extends Component {
     return (
       <div className="browse">
         <div className="browse-filters">
+        <input value={this.state.query} onChange={this.updateInputValue} className="search" type="search" placeholder="Search for courses..."></input>
           <div className="tag" key="All" onClick={this.tagReset}>
             all courses
           </div>
           {tags}
-          <input value={this.state.query} onChange={this.updateInputValue} className="search" type="search" placeholder="Search for courses..."></input>
         </div>
         <div className="browse-courses">
           <div className="browse-snippets">

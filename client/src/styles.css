@@ -329,11 +329,6 @@ COURSE VIEW COMPONENT
   bottom: 0;
 }
 
-.search{
-  display: inline-block;
-  margin-bottom: 20px;
-}
-
 .searchButton{
   margin-bottom: 20px;
 }
@@ -449,7 +444,7 @@ BROWSE COMPONENT
  */
 
 .search {
-  margin-left: 10px;
+  margin-right: 10px;
 }
 
 /*
@@ -695,6 +690,10 @@ ABOUT COMPONENT
 .browse {
   display: grid;
   grid-template-rows: auto auto;
+}
+
+.browse-filters {
+  margin-bottom: 10px;
 }
 
 .browse-courses {
