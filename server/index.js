@@ -131,7 +131,7 @@ app.put('/courses/:courseId', wrap(async (req, res) => {
   const course = { creatorId: req.user.id, ...req.body };
   let newCourse = await db.Course.update(course, { where: {id: courseId} });
   console.log('the newcourse ~~~~~', newCourse)
-  await db.CourseTags.destroy({ where: {
+  await db.CourseTag.destroy({ where: {
     courseId: courseId
   }});
 
