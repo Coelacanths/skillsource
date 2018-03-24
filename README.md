@@ -9,22 +9,18 @@ The goal of this application is to allow users to create courses containing step
 ###### Database ORM: Sequelize
 
 # Features implemented
-###### Create new user & logging in & logging out
-###### Authentication of components to only users who are logged in
-###### Dashboard contains 3 tabs for viewing courses by: Courses Completed, Courses Enrolled, Courses Created
-###### JWT Implementation for authentication in front end client and back end server
-###### Restricted & unrestricted routes
-###### Create new course
-###### Create steps associated with a course
-###### Course has a progress meter
-###### Course tracks when user has completed all steps
-###### Course has ability to embed YouTube videos and display screenshot of website (URL)
-###### User has ability to rate course
-###### Course rating displays & has aggregate of all users' ratings
-###### Comment section for a course
-###### User has ability add comment if they are logged in
-###### Entity relationships handled with Sequelize
-
+###### Live-search on browse page
+###### Users can now reply to comments
+###### Each step has an estimated time to complete
+###### Browse version of components show estimated time to complete the entire course
+###### When creating steps, users can choose to upload images
+###### Image uploads now handled by cloudinary
+###### Implements microservice to capture screenshots and save to cloudinary
+###### Adds css grid styling to browse page with previews of the steps
+###### Adds a setting page for users to edit their email, password, and email preference settings
+###### Server side, implements automatic daily emails when new users enroll in someone's created courses
+###### Server side, implements automatic check if a user's courses are halfway through estimated time and emails a reminder
+###### Users can edit their created courses
 
 # Setup Dev Environment
 ```

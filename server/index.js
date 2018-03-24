@@ -153,12 +153,15 @@ app.put('/courses/:courseId', wrap(async (req, res) => {
     await db.Step.destroy({ where: { id: stepId}});
   });
 
+  await asyncForEach(course.steps, async (step) => {
+   if(step.id){
+      await db.Step.update(step, {where: {id: step.id}})
+    } 
+  });
+
   res.json(newCourse);
 
 }));
-
-
-
 
 
 
