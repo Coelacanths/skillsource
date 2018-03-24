@@ -86,7 +86,7 @@ app.get('/courses', wrap(async (req, res) => {
 
 app.get('/courses/:courseId', wrap(async (req, res) => {
   const { courseId } = req.params;
-  const course = await db.Course.findById(courseId, { include: [db.Step, db.Comment] });
+  const course = await db.Course.findById(courseId, { include: [db.Step, db.Comment, db.Tag] });
   course.dataValues.ratingsCount = await db.ratingsCountByCourseId(courseId);
   res.json(course);
 }));
@@ -124,6 +124,91 @@ app.post('/courses', wrap(async (req, res) => {
     }
   })
 }));
+
+
+app.put('/courses/:courseId', wrap(async (req, res) => {
+  let courseId = req.params.courseId;
+  const course = { creatorId: req.user.id, ...req.body };
+  let newCourse = await db.Course.update(course, { where: {id: courseId} });
+  console.log('the newcourse ~~~~~', newCourse)
+  await db.CourseTags.destroy({ where: {
+    courseId: courseId
+  }});
+
+
+  let tagIds = [];
+  await asyncForEach(course.tags, async (tag) => {
+    if (tag.id) {
+      tagIds.push(tag.id);
+    } else {
+      const newTag = await db.Tag.create(tag);
+      tagIds.push(newTag.id);
+    }
+  })
+  const tags = await db.Tag.findAll({ where: { id: tagIds } });
+  newCourse = await db.Course.findById(courseId);
+  await newCourse.addTags(tags);
+
+  await asyncForEach(course.stepsToDelete, async (stepId) => {
+    await db.Step.destroy({ where: { id: stepId}});
+  });
+
+  await asyncForEach(course.steps, async (step) => {
+    if(step.id){
+      await db.Step.update(step, {where: {id: step.id}})
+    } else {
+      step.courseId = courseId;
+      if (step.url) {
+        pssg.download(step.url, {
+          dest: __dirname + '/../public/images/',
+          filename: step.id
+        }).then((file) => {
+          console.log('Screenshot saved to' + file + '.')
+          cloudinary.uploader.upload(file, (err, result) => {
+            if (err) {
+              console.log(err);
+            } else {
+              console.log(result)
+            }
+          });
+        }).catch((err) => {
+          console.log(err);
+        })
+      }
+      await db.Step.create(step)
+    }
+  });
+  res.json(newCourse);
+  // /// Retrieve and save screenshots
+  // newCourse.steps.forEach((step) => {
+
+  //   if (step.url) {
+  //     pssg.download(step.url, {
+  //       dest: __dirname + '/../public/images/',
+  //       filename: step.id
+  //     }).then((file) => {
+  //       console.log('Screenshot saved to' + file + '.')
+  
+  //       cloudinary.uploader.upload(file, (err, result) => {
+  //         if (err) {
+  //           console.log(err);
+  //         } else {
+  //           console.log(result)
+  //         }
+  //       });
+  
+  //     }).catch((err) => {
+  //       console.log(err);
+  //     })
+  //   }
+  // })
+}));
+
+
+
+
+
+
 
 app.get('/course/:courseId/enrollments', wrap(async (req, res) => {
   const { courseId } = req.params;
@@ -278,6 +363,7 @@ app.get('/tags', wrap(async (req, res) => {
   const tags = await db.Tag.findAll();
   res.json(tags);
 }));
+
 
 // auth
 app.post('/login', wrap(async (req, res) => {

@@ -1,11 +1,15 @@
 import React, { Component } from 'react';
 import StarRatingComponent from 'react-star-rating-component';
 import moment from 'moment';
+import EditCourse from './editCourse.js'
 
 
 class Snippet extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      editable: false
+    }
   }
 
   onMouseEnter = () => {
@@ -20,6 +24,14 @@ class Snippet extends Component {
     }
   }
 
+  edit = (e) => {
+    if(e){
+      e.preventDefault();
+    }
+    var editable = this.state.editable;
+    this.setState({editable: !editable});
+  }
+
   render() {
     const { id, name, rating, description, steps } = this.props.data;
     const url = "#/courses/" + id;
@@ -31,6 +43,7 @@ class Snippet extends Component {
     const time = moment.duration(totalMinutes, 'minutes').humanize();
 
     return (
+      <div>
       <a href={url} onMouseEnter={this.onMouseEnter} onMouseLeave={this.onMouseLeave}>
         <div className="snippet">
           <div className="snippet-name">
@@ -42,7 +55,12 @@ class Snippet extends Component {
             : <p></p>
           }
           <div className="snippet-time">
-            <h4>Estimated Time: {time}</h4>
+            <h4 className="estimated-time">Estimated Time: {time}</h4>
+            {
+              this.props.editable
+              ? <div className='editable' onClick={this.edit}>Edit</div>
+              : ''
+            }
           </div>
           <div className="snippet-rating">
             <StarRatingComponent
@@ -68,6 +86,12 @@ class Snippet extends Component {
           </div>
         </div>
       </a>
+      {
+            this.state.editable
+            ? <EditCourse course={this.props.data} toggleEdit={this.edit} reRenderCreated={this.props.reRenderCreated} />
+            : ''
+          }
+      </div>
     );
   }
 }

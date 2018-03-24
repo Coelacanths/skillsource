@@ -718,6 +718,20 @@ ABOUT COMPONENT
   color: white;
 }
 
+.estimated-time{
+  display: inline-block;
+}
+.editable:hover {
+  text-decoration: underline;
+}
+
+.editable {
+  display: inline-block;
+  float:right;
+  margin-top: 15px;
+  margin-right: 20px;
+  text-align: center;
+}
 
 .loading-spinner {
   margin-top:4px;
