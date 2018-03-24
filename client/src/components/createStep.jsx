@@ -32,7 +32,6 @@ class CreateStep extends Component {
     }
   }
 
-
   handleFileUpload(e) {
     let file = this.uploadInputRef.files[0];
     CloudService.upload(file).then((results) => {
