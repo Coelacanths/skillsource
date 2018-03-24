@@ -106,6 +106,7 @@ class Create extends Component {
             <label>Course Name: </label>
             <input name="name" id="createName" type="text" onChange={this.handleChange} />
           </div>
+          <small>Tag your course so it is easier to find! Type a tagname then hit 'enter' or 'tab'.</small>
           <ReactTags
             tags={this.state.tags}
             suggestions={this.state.suggestions}
@@ -114,6 +115,7 @@ class Create extends Component {
             allowNew={true}
           />
           <div className="input">
+          <br/>
             <label>Description: </label>
             <textarea name="description" id="createDescription" type="text" onChange={this.handleChange}/>
           </div>
