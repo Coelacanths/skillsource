@@ -2,23 +2,38 @@ const users = [
   {
     email: 'magee@magee.com',
     username: 'Magee',
-    password: '123'
+    password: '123',
+    creatorEmail: false,
+    reminderEmail: false,
   },
   {
     email: 'kate@kate.com',
     username: 'Kate',
-    password: '123'
+    password: '123',
+    creatorEmail: false,
+    reminderEmail: false,
   },
   {
     email: 'nick@nick.com',
     username: 'Nick',
-    password: '123'
+    password: '123',
+    creatorEmail: false,
+    reminderEmail: false,
   },
   {
     email: 'bella@bella.com',
     username: 'Bella',
-    password: '123'
+    password: '123',
+    creatorEmail: false,
+    reminderEmail: false,
   },
+  {
+    email:'shelldog42@gmail.com',
+    username: 'Michelle',
+    password: 'chickenface',
+    creatorEmail: false,
+    reminderEmail: true,
+  }
 ];
 
 const courses = [
