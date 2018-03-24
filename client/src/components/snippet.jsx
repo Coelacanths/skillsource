@@ -25,10 +25,11 @@ class Snippet extends Component {
   }
 
   edit = (e) => {
-    e.preventDefault();
+    if(e){
+      e.preventDefault();
+    }
     var editable = this.state.editable;
-    this.setState({editable: !editable})
-    console.log('this.props.data~~~~~', this.props.data)
+    this.setState({editable: !editable});
   }
 
   render() {
@@ -87,7 +88,7 @@ class Snippet extends Component {
       </a>
       {
             this.state.editable
-            ? <EditCourse course={this.props.data} />
+            ? <EditCourse course={this.props.data} toggleEdit={this.edit} />
             : ''
           }
       </div>

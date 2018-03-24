@@ -141,6 +141,10 @@ class Dashboard extends React.Component {
     })
   }
 
+  forceUpdate = () => {
+    this.forceUpdate()
+  }
+
   render(){
     const snippets = this.state.courses.map((course) => {
       return (
@@ -149,7 +153,8 @@ class Dashboard extends React.Component {
           data={course}
           progress={course.progress} 
           numOfEnroll={course.numOfEnroll} 
-          editable={course.editable} />
+          editable={course.editable} 
+          forceUpdate={this.forceUpdate}/>
       )
     });
 

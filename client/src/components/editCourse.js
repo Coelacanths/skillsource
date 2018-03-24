@@ -17,10 +17,11 @@ class EditCourse extends Component {
           duration: 0,
           minutes: 0,
           unit: 'minutes'
-        },
+        }
       ],
       tags: [],
       suggestions: [],
+      stepsToDelete: []
     };
   }
 
@@ -36,6 +37,7 @@ class EditCourse extends Component {
         return tmpTags
       }).then((tags) => {
         this.setState({ tags })
+        console.log('the course Id >>>>>', this.props.course.id)
       })
   }
 
@@ -51,9 +53,9 @@ class EditCourse extends Component {
   handleSubmit = (e) => {
     e.preventDefault();
     const { steps, tags, suggestions, name, description } = this.state;
-    ApiService.createCourse(name, description, steps, tags)
-      .then(course => this.props.history.replace("/courses/" + course.id))
-      .catch(err => console.error('err in handleSubmit', err));
+    ApiService.updateCourse(this.props.course.id, name, description, steps, tags, this.state.stepsToDelete)
+      .then( () => this.props.toggleEdit())
+      .catch(err => console.error('err in submit changes', err));
   }
 
   addStep = () => {
@@ -70,11 +72,13 @@ class EditCourse extends Component {
 
   deleteStep = (index) => {
     let steps = this.state.steps.slice();
+    let stepId = this.state.steps[index].id
     steps.splice(index, 1);
     for (let i = 0; i < steps.length; i++) {
       steps[i].ordinalNumber = i;
     }
-    this.setState({ steps });
+
+    this.setState({ steps , stepsToDelete: [stepId, ...this.state.stepsToDelete]});
     console.log('steps after delete step is called~~~~', steps)
   }
 
@@ -102,7 +106,6 @@ class EditCourse extends Component {
   }
 
   render() {
-    console.log('steps inside render().   ', this.state.steps)
     const steps = this.state.steps.map((step, i) => {
       return (
         <CreateStep
@@ -134,7 +137,6 @@ class EditCourse extends Component {
             <textarea defaultValue={this.props.course.description} name="description" id="createDescription" type="text" onChange={this.handleChange}/>
           </div>
           {steps}
-          {console.log('steps inside the return~~~~', steps)}
           <button onClick={this.addStep}>Add a step</button>
           <button onClick={this.handleSubmit}>Submit Changes</button>
         </div>

@@ -16,14 +16,15 @@ const ApiService = {
     });
   },
 
-  updateCourse: (name, description, steps, tags) => {
-    return AuthService.fetch('/courses', {
+  updateCourse: (id, name, description, steps, tags, stepsToDelete) => {
+    return AuthService.fetch(`/courses/${id}`, {
       method: 'PUT',
       body: {
         name,
         description,
         steps,
         tags,
+        stepsToDelete
       }
     });
   },
