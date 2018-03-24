@@ -67,7 +67,8 @@ class Create extends Component {
     steps[index][e.target.name] = e.target.value;
 
     const unit = steps[index].unit
-    const duration = Number(steps[index].duration)
+    const duration = Number(steps[index].duration);
+    const test = moment.duration({ [unit]: duration });
     steps[index].minutes = moment.duration({ [unit]: duration }).asMinutes();
 
     this.setState({ steps });
