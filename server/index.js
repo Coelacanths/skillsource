@@ -7,7 +7,6 @@ const cors = require('cors');
 const exjwt = require('express-jwt');
 const express = require('express');
 const jwt = require('jsonwebtoken');
-const pssg = require('pssg'); // Google Pagespeed Screenshot API
 const mailer = require('./helpers/mailer.js');
 const schedule = require('node-schedule');
 const moment = require('moment');
@@ -20,7 +19,6 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
 app.use(express.static(__dirname + '/../client/dist'));
 app.use('/favicon.ico', express.static(__dirname + '/../favicon.ico'));
-app.use('/screenshots', express.static(__dirname + '/../public/images/'));
 
 async function asyncForEach(array, callback) {
   for (let index = 0; index < array.length; index++) {
@@ -109,20 +107,6 @@ app.post('/courses', wrap(async (req, res) => {
   const tags = await db.Tag.findAll({ where: { id: tagIds } });
   await newCourse.addTags(tags);
   res.json(newCourse);
-
-  /// Retrieve and save screenshots
-  newCourse.steps.forEach((step) => {
-    if (step.url) {
-      pssg.download(step.url, {
-        dest: __dirname + '/../public/images/',
-        filename: step.id
-      }).then((file) => {
-        console.log('Screenshot saved to' + file + '.');
-      }).catch((err) => {
-        console.log(err);
-      })
-    }
-  })
 }));
 
 
