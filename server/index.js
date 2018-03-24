@@ -153,55 +153,8 @@ app.put('/courses/:courseId', wrap(async (req, res) => {
     await db.Step.destroy({ where: { id: stepId}});
   });
 
-  await asyncForEach(course.steps, async (step) => {
-    if(step.id){
-      await db.Step.update(step, {where: {id: step.id}})
-    } else {
-      step.courseId = courseId;
-      if (step.url) {
-        pssg.download(step.url, {
-          dest: __dirname + '/../public/images/',
-          filename: step.id
-        }).then((file) => {
-          console.log('Screenshot saved to' + file + '.')
-          cloudinary.uploader.upload(file, (err, result) => {
-            if (err) {
-              console.log(err);
-            } else {
-              console.log(result)
-            }
-          });
-        }).catch((err) => {
-          console.log(err);
-        })
-      }
-      await db.Step.create(step)
-    }
-  });
   res.json(newCourse);
-  // /// Retrieve and save screenshots
-  // newCourse.steps.forEach((step) => {
 
-  //   if (step.url) {
-  //     pssg.download(step.url, {
-  //       dest: __dirname + '/../public/images/',
-  //       filename: step.id
-  //     }).then((file) => {
-  //       console.log('Screenshot saved to' + file + '.')
-  
-  //       cloudinary.uploader.upload(file, (err, result) => {
-  //         if (err) {
-  //           console.log(err);
-  //         } else {
-  //           console.log(result)
-  //         }
-  //       });
-  
-  //     }).catch((err) => {
-  //       console.log(err);
-  //     })
-  //   }
-  // })
 }));
 
 

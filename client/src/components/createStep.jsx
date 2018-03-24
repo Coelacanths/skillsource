@@ -68,7 +68,7 @@ class CreateStep extends Component {
               <label>
                 <strong>Link to online resource (optional)</strong><br />
                 <small>Please type a full url and <strong>hit enter</strong>. When you provide a URL, we automatically visit that URL and create a screenshot to help users engage with your course. Don't worry if you see a <strong>loading</strong> icon-- just keep filling out the rest of the step information!</small>
-                <input name="url" className="stepUrl" type="text" placeholder="Full URL (e.g., http://www.cnn.com)" onChange={(e) => { this.props.stepChange(e, this.props.data.ordinalNumber) }} onKeyPress={(e) => { this.handleUrlInput(e) }} />
+                <input value={this.props.data.url} name="url" className="stepUrl" type="text" placeholder="Full URL (e.g., http://www.cnn.com)" onChange={(e) => { this.props.stepChange(e, this.props.data.ordinalNumber) }} onKeyPress={(e) => { this.handleUrlInput(e) }} />
                 {this.state.loading ? <div><div className="loading-spinner">&nbsp;</div>Loading...</div> : ''}
               </label>
             </div>
@@ -103,30 +103,6 @@ class CreateStep extends Component {
             <option value="weeks">Weeks</option>
           </select>
         </div>
-        <h4>Attachments/Resources:</h4>
-        <div className="form-element">
-          <div className="input">
-            <label>
-              Link to online resource<br/>
-              <input value={this.props.data.url} name="url" className="stepUrl" type="text" placeholder="Full URL (e.g., http://www.cnn.com)..." onChange={(e) => {this.props.stepChange(e, this.props.data.ordinalNumber)}}/>
-            </label>
-          </div>
-        </div>
-        <div className="form-element">
-          <div className="input">
-            <label>
-              Attach an image<br/>
-              <input name="" ref={(ref) => { this.uploadInputRef = ref; }} className="" type="file" placeholder="..." onChange={this.handleFileUpload.bind(this)}/>
-            </label><br/>
-            <small>Please only upload images you have rights to. And SFW only please. Thanks!</small>
-          </div>
-        </div>
-
-        { this.props.data.imgRef ? 
-          CloudService.getFromCloudinary(this.props.data.imgRef)
-          : 
-          ''
-        }
       </div>
     );
   }
