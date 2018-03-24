@@ -154,13 +154,14 @@ app.put('/courses/:courseId', wrap(async (req, res) => {
   });
 
   await asyncForEach(course.steps, async (step) => {
-   if(step.id){
+    if(step.id){
       await db.Step.update(step, {where: {id: step.id}})
-    } 
+    } else {
+      step.courseId = courseId
+      await db.Step.create(step)
+    }
   });
-
   res.json(newCourse);
-
 }));
 
 
