@@ -1,13 +1,12 @@
 const seed = require('./sampleData/sampleData.js')
 const Sequelize = require('sequelize');
-const { db_name, db_user, db_password } = require('../config/config');
+const { db_name, db_user, db_password } = require('../config/db');
 
 const sequelize = new Sequelize(db_name, db_user, db_password, {
-  host: 'localhost',
+  host: 'us-cdbr-iron-east-05.cleardb.net',
   dialect: 'mysql',
   logging: false,
   operatorsAliases: false,
-  logging: false,
 });
 
 const User = sequelize.define('user', {
@@ -89,10 +88,7 @@ const Tag = sequelize.define('tag', {
   }
 });
 
-const CourseTags = sequelize.define('courseTags', {
-  courseId: Sequelize.INTEGER, 
-  tagId: Sequelize.INTEGER
-});
+const CourseTag = sequelize.define('courseTag');
 
 Course.belongsTo(User, { as: 'creator' });
 
@@ -113,22 +109,24 @@ Course.hasMany(Comment);
 
 Comment.hasMany(Comment, { as: 'thread'});
 
-Course.belongsToMany(Tag, { through: CourseTags });
-Tag.belongsToMany(Course, { through: CourseTags });
+Course.belongsToMany(Tag, { through: CourseTag });
+Tag.belongsToMany(Course, { through: CourseTag });
 
 // / USE THIS TO SEED DB ///////
 
-// sequelize.sync({ force: true }).then(async () => {
-//   await User.bulkCreate(seed.sampleUsers);
-//   const tags = await Tag.bulkCreate(seed.sampleTags);
-//   const courses = await Course.bulkCreate(seed.sampleCourses);
-//   const user = await User.findById(5);
-//   await courses[0].addTags([tags[3]]);
-//   await courses[1].addTags([tags[0]]);
-//   await courses[2].addTags([tags[1]]);
-//   await Step.bulkCreate(seed.sampleSteps);
-//   await Comment.bulkCreate(seed.sampleComments);
-//   await user.addCourse(3);
+// sequelize.sync()
+
+//.then(async () => {
+  // await User.bulkCreate(seed.sampleUsers);
+  // const tags = await Tag.bulkCreate(seed.sampleTags);
+  // const courses = await Course.bulkCreate(seed.sampleCourses);
+  // const user = await User.findById(5);
+  // await courses[0].addTags([tags[3]]);
+  // await courses[1].addTags([tags[0]]);
+  // await courses[2].addTags([tags[1]]);
+  // await Step.bulkCreate(seed.sampleSteps);
+  // await Comment.bulkCreate(seed.sampleComments);
+  // await user.addCourse(3);
 // });
 
 /////////////////////////////
@@ -157,6 +155,6 @@ module.exports = {
   Tag,
   updateCourseRating,
   ratingsCountByCourseId,
-  CourseTags,
+  CourseTag,
   getCourseLength,
 }
